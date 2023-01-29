@@ -1,4 +1,6 @@
+import yamlParser from "js-yaml";
 import { parseTree } from "jsonc-parser";
+import useJson from "src/store/useJson";
 import { addEdgeToGraph } from "./addEdgeToGraph";
 import { addNodeToGraph } from "./addNodeToGraph";
 import { calculateNodeSize } from "./calculateNodeSize";
@@ -27,7 +29,8 @@ export type States = {
 
 export const parser = (jsonStr: string) => {
   try {
-    let json = parseTree(jsonStr);
+    const yaml = useJson.getState().yaml ? JSON.stringify(yamlParser.load(jsonStr)) : jsonStr;
+    let json = parseTree(yaml);
 
     const graph: Graph = {
       nodes: [],

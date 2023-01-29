@@ -28,6 +28,7 @@ const StyledWrapper = styled.div`
 
 export const MonacoEditor = () => {
   const json = useJson(state => state.json);
+  const yaml = useJson(state => state.yaml);
   const setJson = useJson(state => state.setJson);
   const setError = useJson(state => state.setError);
   const [loaded, setLoaded] = React.useState(false);
@@ -96,8 +97,9 @@ export const MonacoEditor = () => {
         onChange={setValue}
         loading={<Loading message="Loading Editor..." />}
         beforeMount={handleEditorWillMount}
-        defaultLanguage="json"
+        defaultLanguage={yaml ? "yaml" : "json"}
         height="100%"
+        key={String(yaml)}
       />
     </StyledWrapper>
   );

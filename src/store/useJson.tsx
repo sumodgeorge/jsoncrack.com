@@ -6,6 +6,7 @@ import { saveJson as saveJsonDB } from "src/services/db/json";
 import useGraph from "src/store/useGraph";
 import { Json } from "src/typings/altogic";
 import { create } from "zustand";
+import useUser from "./useUser";
 
 interface JsonActions {
   setJson: (json: string) => void;
@@ -15,6 +16,7 @@ interface JsonActions {
   setError: (hasError: boolean) => void;
   setHasChanges: (hasChanges: boolean) => void;
   saveJson: (isNew?: boolean) => Promise<string | undefined>;
+  toggleYaml: () => void;
 }
 
 const initialStates = {
@@ -23,6 +25,7 @@ const initialStates = {
   loading: true,
   hasChanges: false,
   hasError: false,
+  yaml: false,
 };
 
 function inIframe() {
@@ -37,6 +40,12 @@ export type JsonStates = typeof initialStates;
 
 const useJson = create<JsonStates & JsonActions>()((set, get) => ({
   ...initialStates,
+  toggleYaml: () => {
+    if (!useUser.getState().isPremium()) {
+      return toast.error("Early access is currently only available to premium users.");
+    }
+    set(s => ({ yaml: !s.yaml, json: "[]" }));
+  },
   getJson: () => get().json,
   getHasChanges: () => get().hasChanges,
   fetchJson: async jsonId => {
@@ -85,7 +94,7 @@ const useJson = create<JsonStates & JsonActions>()((set, get) => ({
   },
   setJson: json => {
     useGraph.getState().setGraph(json);
-    set({ json: JSON.stringify(JSON.parse(json), null, 2), hasChanges: true });
+    set({ json, hasChanges: true });
   },
   saveJson: async (isNew = true) => {
     try {

@@ -51,7 +51,7 @@ const useGraph = create<Graph & GraphActions>((set, get) => ({
       collapsedNodes: [],
       collapsedEdges: [],
       graphCollapsed: false,
-      loading: true,
+      loading: false,
       ...options,
     });
   },

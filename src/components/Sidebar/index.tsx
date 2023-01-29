@@ -142,14 +142,24 @@ const SidebarButton: React.FC<{
   );
 };
 
+const StyledYamlBtn = styled.div<{ active: boolean }>`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  height: 48px;
+  width: 40px;
+  color: ${({ theme, active }) => active && theme.BLURPLE};
+`;
+
 export const Sidebar: React.FC = () => {
   const setVisible = useModal(state => state.setVisible);
   const setDirection = useGraph(state => state.setDirection);
   const getJson = useJson(state => state.getJson);
+  const toggleYaml = useJson(state => state.toggleYaml);
 
   const collapseGraph = useGraph(state => state.collapseGraph);
   const expandGraph = useGraph(state => state.expandGraph);
-  const centerView = useGraph(state => state.centerView);
   const toggleFold = useGraph(state => state.toggleFold);
   const toggleFullscreen = useGraph(state => state.toggleFullscreen);
 
@@ -157,6 +167,7 @@ export const Sidebar: React.FC = () => {
   const foldNodes = useGraph(state => state.foldNodes);
   const fullscreen = useGraph(state => state.fullscreen);
   const graphCollapsed = useGraph(state => state.graphCollapsed);
+  const yaml = useJson(state => state.yaml);
 
   const handleSave = () => {
     const a = document.createElement("a");
@@ -242,6 +253,13 @@ export const Sidebar: React.FC = () => {
           deviceDisplay="desktop"
           onClick={() => setVisible("cloud")(true)}
           component={<VscCloud />}
+        />
+
+        <SidebarButton
+          title="Enable YAML"
+          deviceDisplay="desktop"
+          onClick={toggleYaml}
+          component={<StyledYamlBtn active={yaml}>YAML (beta)</StyledYamlBtn>}
         />
 
         <SidebarButton
